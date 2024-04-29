@@ -1,8 +1,9 @@
 #include "appdialog.h"
 #include "ui_appdialog.h"
 
-AppDialog::AppDialog(QWidget *parent) :
+AppDialog::AppDialog(QWidget *parent, int option) :
     QDialog(parent),
+    m_option(option),
     ui(new Ui::AppDialog)
 {
     ui->setupUi(this);
@@ -20,9 +21,10 @@ AppDialog::AppDialog(QWidget *parent) :
 
     Firefoxpwa *pwa = new Firefoxpwa();
 
-    ui->appIcon->setIcon(QIcon::fromTheme("foxy"));
+    ui->appIcon->setIcon(QIcon(":/icons/foxy.svg"));
     ui->cmbBoxProfiles->addItem("Automatically Create a New Profile");
     ui->cmbBoxProfiles->addItems(pwa->listProfileNames());
+    ui->cmbBoxProfiles->setCurrentIndex(option);
     ui->cmbBoxCategories->addItems(this->categoriesList());
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
 
@@ -67,7 +69,7 @@ void AppDialog::appIconClick()
 
     if(iconPath.isEmpty())
     {
-        ui->appIcon->setIcon(QIcon::fromTheme("foxy"));
+        ui->appIcon->setIcon(QIcon(":/icons/foxy.svg"));
     }
     else
     {
@@ -99,7 +101,7 @@ void AppDialog::createButtonClick()
 
     }
 
-    Utils::createIcon(app->id(),AppDialog::iconPath());
+    Utils::createIcon(*app,AppDialog::iconPath());
 
     //NewAppDialog::deleteShortcut(newApp);
     //NewAppDialog::createAppShortcut(newApp);

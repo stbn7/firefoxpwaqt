@@ -1,9 +1,9 @@
 #include "appdialogedit.h"
 #include "ui_appdialogedit.h"
 
-AppDialogEdit::AppDialogEdit(QWidget *parent, QString nameApp)
+AppDialogEdit::AppDialogEdit(QWidget *parent, QString idApp)
     : QDialog(parent)
-    , m_nameApp(nameApp)
+    , m_idApp(idApp)
     , ui(new Ui::AppDialogEdit)
 {
     ui->setupUi(this);
@@ -14,10 +14,14 @@ AppDialogEdit::AppDialogEdit(QWidget *parent, QString nameApp)
                      this, &AppDialogEdit::rejectButtonClick);
     QObject::connect(ui->buttonBox, &QDialogButtonBox::accepted,
                      this, &AppDialogEdit::acceptedButtonClick);
+    QObject::connect(ui->lnEditName, &QLineEdit::textChanged,
+                     this, &AppDialogEdit::acceptedButtonActive);
+    QObject::connect(ui->lnEditDescription, &QLineEdit::textChanged,
+                     this, &AppDialogEdit::acceptedButtonActive);
+    QObject::connect(ui->appIcon, &QPushButton::pressed,
+                     this, &AppDialogEdit::acceptedButtonActive);
 
     Firefoxpwa *pwa = new Firefoxpwa();
-    QList<App*> listApp;
-
     App *app = new App();
 
     ui->buttonBox->setMinimumHeight(30);
@@ -26,30 +30,19 @@ AppDialogEdit::AppDialogEdit(QWidget *parent, QString nameApp)
     while(buttons.size())
         buttons.takeFirst()->setMinimumHeight(ui->buttonBox->minimumHeight());
 
-    listApp = pwa->searchApp(nameApp);
-
-    app = listApp.at(0);
+    app = pwa->searchAppForID(idApp);
 
     this->setApp(app);
 
     ui->appIcon->setIcon(QIcon::fromTheme(app->icon()));
     ui->lnEditName->setText(app->name());
     ui->lnEditDescription->setText(app->description());
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
 }
 
 AppDialogEdit::~AppDialogEdit()
 {
     delete ui;
-}
-
-void AppDialogEdit::setNameApp(QString &nameApp)
-{
-    m_nameApp = nameApp;
-}
-
-QString AppDialogEdit::nameApp()
-{
-    return m_nameApp;
 }
 
 void AppDialogEdit::setApp(const App *app)
@@ -71,6 +64,7 @@ void AppDialogEdit::appIconClick()
     if(iconPath.isEmpty())
     {
         ui->appIcon->setIcon(QIcon::fromTheme(this->app().icon()));
+
     }
     else
     {
@@ -80,10 +74,35 @@ void AppDialogEdit::appIconClick()
 
 void AppDialogEdit::acceptedButtonClick()
 {
-    this->app().setName(ui->lnEditName->text());
-    this->app().setDescription(ui->lnEditDescription->toPlainText());
-    Firefoxpwa::editApp(this->app(), this->iconPath());
+    App app;
+    app = AppDialogEdit::app();
+    app.setName(ui->lnEditName->text());
+    app.setDescription(ui->lnEditDescription->text());
+
+    Utils::createIcon(app,this->iconPath());
+    Firefoxpwa::editApp(app, this->iconPath());
+
     this->close();
+}
+
+void AppDialogEdit::acceptedButtonActive()
+{
+    if(!ui->lnEditName->text().isEmpty() && !ui->lnEditDescription->text().isEmpty())
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+    }else if(!this->m_iconPath.isEmpty() && !ui->lnEditName->text().isEmpty()
+               && !ui->lnEditDescription->text().isEmpty())
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+    }else if(ui->lnEditName->text() == this->app().name() && ui->lnEditDescription->text() == this->app().description()
+               && this->m_iconPath.isEmpty())
+    {
+         ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
+    }
+    else
+    {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
+    }
 }
 
 void AppDialogEdit::rejectButtonClick()

@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/foxy.svg</file>
+        <file>icons/applications-all.svg</file>
+        <file>icons/external-link.svg</file>
+        <file>icons/template.svg</file>
+    </qresource>
+</RCC>

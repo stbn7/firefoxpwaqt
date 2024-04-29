@@ -20,6 +20,9 @@ public:
     static void createIcon(QString idApp, QString iconPath);
     static void updateDescription(QString description, QString newDescription);
 
+    static void createIcon(App app, QString rootPath);
+    static void removeFolder();
+
 private:
     QList<App*> m_appList;
 

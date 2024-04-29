@@ -21,6 +21,7 @@ public:
     QString createApp(QString manifest, QString idProfile);
     void removeApp(QString idApp);
     QString searchAppID(QString name);
+    App *searchAppForID(QString id);
     QList<App*> searchApp(QString name) const;
     void lauchApp(QString idApp);
 

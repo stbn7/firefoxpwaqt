@@ -14,13 +14,6 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->btnAddProfile,&QPushButton::clicked,
                      this, &MainWindow::addProfileButtonClicked);
 
-
-    QObject::connect(ui->listOption,&QListWidget::activated,
-                     this, &MainWindow::profileButtonClicked);
-
-    QObject::connect(ui->listOption,&QListWidget::activated,
-                     this, &MainWindow::appButtonClicked);
-
     QObject::connect(ui->btnLaunch,&QPushButton::clicked,
                      this, &MainWindow::launchButtonClicked);
 
@@ -30,21 +23,40 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->btnDeleteProfile,&QPushButton::clicked,
                      this, &MainWindow::deleteProfileButtonClicked);
 
-    QObject::connect(ui->listWApps, &QListWidget::activated,
-                     this, &MainWindow::showAppData);
-
     QObject::connect(ui->listWProfile, &QListWidget::activated,
                      this, &MainWindow::showProfileData);
 
     QObject::connect(ui->btnEditApp, &QPushButton::clicked,
                      this, &MainWindow::editButtonClicked);
 
-    ui->listWProfile->hide();
-    this->showListApps();
-    ui->stackedWidget->setCurrentIndex(0);
+    QObject::connect(ui->btnEditProfile, &QPushButton::clicked,
+                     this, &MainWindow::editProfile);
 
-    new QListWidgetItem(QIcon::fromTheme("applications-all"),"Applications",ui->listOption);
-    new QListWidgetItem(QIcon::fromTheme("foxy"),"Profiles",ui->listOption);
+    QObject::connect(ui->btnApp1, &QPushButton::clicked,
+                     this, &MainWindow::showAppDataBtn1);
+
+    QObject::connect(ui->btnApp2, &QPushButton::clicked,
+                     this, &MainWindow::showAppDataBtn2);
+
+    QObject::connect(ui->btnApp3, &QPushButton::clicked,
+                     this, &MainWindow::showAppDataBtn3);
+
+
+    this->showListProfile();
+    ui->stackedWidget->setCurrentIndex(0);
+    ui->btnDeleteProfile->setEnabled(false);
+    ui->btnEditProfile->setHidden(true);
+    ui->btnEditProfile->setEnabled(false);
+
+    QLabel *dockTitle = new QLabel("Profiles", ui->dockWidget);
+    dockTitle->setStyleSheet("font-size: 10pt; padding-left: 10px; padding-top: 20px;");
+    ui->dockWidget->setTitleBarWidget(dockTitle);
+
+    this->showListApps();
+
+
+
+    //new QListWidgetItem(QIcon::fromTheme("applications-all"),"Applications",ui->listOption);
 }
 
 
@@ -56,12 +68,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::addAppButtonClicked()
 {
-    AppDialog * appdialog = new AppDialog(this);
+    int option = ui->listWProfile->currentRow() + 1;
+
+    AppDialog * appdialog = new AppDialog(this,option);
 
     if(appdialog->exec() == 0)
     {
-        ui->listWApps->clear();
-        this->showListApps();
+        ui->listWProfile->clear();
+        this->showListProfile();
+        ui->stackedWidget->setCurrentIndex(0);
+
     }
 
 
@@ -69,63 +85,33 @@ void MainWindow::addAppButtonClicked()
 
 void MainWindow::addProfileButtonClicked()
 {
-    ProfileDialog * profiledialog = new ProfileDialog();
+    ProfileDialog * profiledialog = new ProfileDialog(this);
 
     if(profiledialog->exec() == 0)
     {
         ui->listWProfile->clear();
         this->showListProfile();
+
     }
 
-
-}
-
-void MainWindow::profileButtonClicked()
-{
-
-    if(ui->listOption->currentItem()->text() == "Profiles")
-    {
-        ui->lblType->setText("Profiles");
-        ui->listWApps->hide();
-        ui->listWProfile->clear();   
-        ui->listWProfile->show();
-        this->showListProfile();
-        ui->stackedWidget->setCurrentIndex(0);
-    }
-
-
-}
-
-void MainWindow::appButtonClicked()
-{
-    if(ui->listOption->currentItem()->text() == "Applications")
-    {
-    ui->lblType->setText("Applications");
-    ui->listWProfile->hide();
-    ui->listWApps->clear(); 
-    ui->listWApps->show();
-    this->showListApps();
-    ui->stackedWidget->setCurrentIndex(0);
-    }
 
 }
 
 void MainWindow::launchButtonClicked()
 {
     Firefoxpwa *pwa = new Firefoxpwa();
-    QString name = ui->listWApps->currentItem()->text();
-    QString idApp = pwa->searchAppID(name);
+    QString idApp = ui->lblIdApp->text().remove("<b>ID: </b>");
     pwa->lauchApp(idApp);
 }
 
 void MainWindow::editButtonClicked()
 {
-    QString name = ui->listWApps->currentItem()->text();
-    AppDialogEdit *editApp = new AppDialogEdit(this,name);
+    QString idApp = ui->lblIdApp->text().remove("<b>ID: </b>");
+    AppDialogEdit *editApp = new AppDialogEdit(this,idApp);
 
     if(editApp->exec() == 0)
     {
-        ui->listWApps->clear();
+        //ui->listWApps->clear();
         this->showListApps();
     }
 
@@ -145,10 +131,10 @@ void MainWindow::showListApps()
 
         if(QIcon::fromTheme(app->icon()).isNull())
         {
-            new QListWidgetItem(QIcon::fromTheme("foxy"),app->name(),ui->listWApps);
+           // new QListWidgetItem(QIcon::fromTheme("foxy"),app->name(),ui->listWApps);
         }else
         {
-            new QListWidgetItem(QIcon::fromTheme(app->icon()),app->name(),ui->listWApps);
+            //new QListWidgetItem(QIcon::fromTheme(app->icon()),app->name(),ui->listWApps);
         }
 
 
@@ -162,47 +148,90 @@ void MainWindow::showListProfile()
 {
     Firefoxpwa *pwa = new Firefoxpwa();
     Profile *profile = new Profile();
+    QString iconPath;
+
 
     QList<Profile*> listProfile = pwa->listProfile();
 
     for(int i=0; i<listProfile.size();i++)
     {
         profile = listProfile.at(i);
-        new QListWidgetItem(QIcon::fromTheme("foxy"), profile->name(),ui->listWProfile);
+        QString iconPath = QDir::homePath() + "/.local/share/icons/firefoxpwaqt/" + profile->name().toLower().split(" ").at(0) + ".svg";
+        QFile path = iconPath;
 
+        if(path.exists())
+        {
+            new QListWidgetItem(QIcon(iconPath), profile->name(),ui->listWProfile);
+        }else
+        {
+            new QListWidgetItem(QIcon(":/icons/foxy"), profile->name(),ui->listWProfile);
+        }
     }
     delete profile;
 }
+void MainWindow::showAppDataBtn1()
+{
+    MainWindow::showAppData(1);
+}
 
-void MainWindow::showAppData()
+void MainWindow::showAppDataBtn2()
+{
+    MainWindow::showAppData(2);
+}
+
+void MainWindow::showAppDataBtn3()
+{
+    MainWindow::showAppData(3);
+}
+void MainWindow::showAppData(int option)
 {
 
     ui->stackedWidget->setCurrentIndex(1);
+    ui->btnDeleteProfile->setHidden(true);
+    ui->btnEditProfile->setHidden(true);
 
-    QString name = "";
-    QString appIcon;
-    Firefoxpwa *pwa = new Firefoxpwa();
     App *app = new App();
+    Firefoxpwa *pwa = new Firefoxpwa();
+    QString name = "";
+
+
+    QString idProfile = ui->lblIdProfile->text().remove("ID: ");
 
     QList<App*> list = pwa->listApps();
 
-    name = ui->listWApps->currentItem()->text();
+    if(option == 1)
+    {
+        name = ui->btnApp1->text().remove(" 🡥");
+    }
+    if(option == 2)
+    {
+        name = ui->btnApp2->text().remove(" 🡥");
+    }
+    if(option == 3)
+    {
+        name = ui->btnApp3->text().remove(" 🡥");
+    }
+
+
 
     for(int i=0; i<list.size(); i++)
     {
         app = list.at(i);
-        if(app->name() == name)
+
+        if(app->name() == name && app->profile() == idProfile)
         {
             ui->lblNameApp->setText(app->name());
 
-            appIcon = "FFPWA-" + app->id();
+            QString appIcon = QDir::homePath() + "/.local/share/icons/hicolor/scalable/apps/FFPWA-" + app->id() + ".svg";
+            QFile dirIcon(appIcon);
 
-            if(QIcon::fromTheme(appIcon).isNull())
-            {                
-                ui->iconApp->setIcon(QIcon::fromTheme(app->name().toLower()));
-            }else
+            if(!dirIcon.exists())
             {
-                ui->iconApp->setIcon(QIcon::fromTheme("FFPWA-" + app->id()));
+                ui->iconApp->setIcon(QIcon(":/icons/foxy"));
+            }
+            else
+            {
+                ui->iconApp->setIcon(QIcon(appIcon));
             }
             
             
@@ -211,8 +240,6 @@ void MainWindow::showAppData()
             ui->lblAddress->setText("<b>Address: </b>" + app->address());
             ui->lblIdApp->setText("<b>ID: </b>" + app->id());
             ui->lblIdApp->setTextInteractionFlags(Qt::TextSelectableByMouse);
-
-            ui->lblProfile->setText("<b>Profile:</b> " + app->profile());
             i = list.size();
 
         }
@@ -223,41 +250,80 @@ void MainWindow::showAppData()
 void MainWindow::showProfileData()
 {
     ui->stackedWidget->setCurrentIndex(2);
-
+    ui->btnDeleteProfile->setEnabled(true);
     Firefoxpwa *pwa = new Firefoxpwa();
+    ui->btnDeleteProfile->setHidden(false);
+    ui->btnEditProfile->setEnabled(true);
+
+
 
     QList<Profile*> listProfile = pwa->listProfile();
     QString name = "";
     QString pathIcon;
-
-    QDir filePath;
-
-    pathIcon = QDir::homePath() + "/.local/share/icons/";
-    pathIcon = pathIcon.append(QIcon::themeName()) + "/apps/symbolic/";
+    QList<QString> apps;
 
     Profile *profile = new Profile();
 
     name = ui->listWProfile->currentItem()->text();
-    pathIcon = pathIcon + name.toLower().split(" ").at(0) + "-symbolic.svg";
 
     for(int i=0; i<listProfile.size(); i++)
     {
         profile = listProfile.at(i);
         if(profile->name() == name)
         {
+            apps = profile->apps();
             ui->lblNameProfile->setText(profile->name());
 
-            if(filePath.exists(pathIcon))
+            QString iconPath = QDir::homePath() + "/.local/share/icons/firefoxpwaqt/" + profile->name().toLower().split(" ").at(0) + ".svg";
+            QFile path = iconPath;
+
+            if(path.exists())
             {
-                ui->iconProfile->setIcon(QIcon::fromTheme(pathIcon));
+                ui->iconProfile->setIcon(QIcon(iconPath));
             }else
             {
-                ui->iconProfile->setIcon(QIcon::fromTheme("foxy"));
+                 ui->iconProfile->setIcon(QIcon(":/icons/foxy"));
             }
+
             ui->lblDescriptionProfile->setText("Description: " + profile->description());
             ui->lblIdProfile->setText("ID: " + profile->id());
             ui->lblIdProfile->setTextInteractionFlags(Qt::TextSelectableByMouse);
-            ui->lblApps->setText("Apps: " + profile->apps().at(0));
+
+            if(apps.at(0) == "* Nothing *")
+            {
+                ui->lblApps->setText("Apps: " + apps.at(0));
+                ui->btnApp1->hide();
+                ui->btnApp2->hide();
+                ui->btnApp3->hide();
+            }else
+            {
+                for(int i=0; i<apps.length(); i++)
+                {
+                    if(i==0)
+                    {
+                        ui->lblApps->show();
+                        ui->lblApps->setText("Apps: ");
+                        ui->btnApp1->show();
+                        ui->btnApp1->setText(apps.at(i) + " 🡥");
+                        ui->btnApp2->hide();
+                        ui->btnApp3->hide();
+                    }
+                    if(i==1)
+                    {
+                        ui->btnApp2->show();
+                        ui->btnApp2->setText(apps.at(i) + " 🡥");
+                        ui->btnApp3->hide();
+                    }
+                    if(i==2)
+                    {
+                        ui->btnApp3->show();
+                        ui->btnApp3->setText(apps.at(i) + " 🡥");
+                    }
+
+                }
+            }
+
+
             i = listProfile.size();
         }
 
@@ -268,23 +334,8 @@ void MainWindow::showProfileData()
 
 void MainWindow::deleteAppButtonClicked()
 {
-    Firefoxpwa *pwa = new Firefoxpwa();
-    QString name, id;
-
-    App *app = new App();
-
-    QList<App*> listApp = pwa->listApps();
-    name = ui->listWApps->currentItem()->text();
-
-    for(int i=0; i<listApp.size(); i++)
-    {
-        app = listApp.at(i);
-        if(app->name() == name)
-        {
-            id = app->id();
-            i= listApp.size();
-        }
-    }
+    Firefoxpwa *pwa = new Firefoxpwa();        
+    QString id = ui->lblIdApp->text().remove("<b>ID: </b>");
 
     QMessageBox msgBox;
     msgBox.setWindowTitle("Remove Web App");
@@ -297,35 +348,22 @@ void MainWindow::deleteAppButtonClicked()
     if(msgBox.exec() == QMessageBox::Yes)
     {
         pwa->removeApp(id);
-        ui->listWApps->clear();
-        this->showListApps();
+        this->showProfileData();
     }
 
+    delete pwa;
+}
 
-    delete app;
-
-
+void MainWindow::editProfile()
+{
+    ui->lblNameProfile->setTextInteractionFlags(Qt::TextEditable);
+    ui->lblDescriptionProfile->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextEditable | Qt::TextSelectableByKeyboard);
 }
 
 void MainWindow::deleteProfileButtonClicked()
 {
     Firefoxpwa *pwa = new Firefoxpwa();
-    QString name, idProfile;
-
-    Profile *profile = new Profile();
-
-    QList<Profile*> listProfile = pwa->listProfile();
-    name = ui->listWProfile->currentItem()->text();
-
-    for(int i=0; i<listProfile.size(); i++)
-    {
-        profile = listProfile.at(i);
-        if(profile->name() == name)
-        {
-            idProfile = profile->id();
-            i= listProfile.size();
-        }
-    }
+    QString idProfile = ui->lblIdProfile->text().remove("ID: ");
 
     QMessageBox msgBox;
     msgBox.setWindowTitle("Remove Profile");
@@ -341,10 +379,10 @@ void MainWindow::deleteProfileButtonClicked()
         ui->listWProfile->clear();
         this->showListProfile();
         //ui->listWidgetApps->item(0)->setSelected(true);
+        ui->stackedWidget->setCurrentIndex(0);
+        Utils::removeFolder();
     }
-
-
-    delete profile;
+    delete pwa;
 }
 
 void MainWindow::resetDataLabel()
@@ -360,20 +398,20 @@ void MainWindow::resetDataLabel()
 
 
 
-void MainWindow::on_actionNewApp_triggered()
-{
-    this->addAppButtonClicked();
-}
+// void MainWindow::on_actionNewApp_triggered()
+// {
+//     this->addAppButtonClicked();
+// }
 
 
-void MainWindow::on_actionNew_Profile_triggered()
-{
-    this->addProfileButtonClicked();
-}
+// void MainWindow::on_actionNew_Profile_triggered()
+// {
+//     this->addProfileButtonClicked();
+// }
 
 
-void MainWindow::on_actionQuit_triggered()
-{
-    this->close();
-}
+// void MainWindow::on_actionQuit_triggered()
+// {
+//     this->close();
+// }
 

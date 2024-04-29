@@ -17,7 +17,7 @@ class AppDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit AppDialog(QWidget *parent = nullptr);
+    explicit AppDialog(QWidget *parent = nullptr, int option = 0);
     ~AppDialog();
 
     void setIconPath(const QString &path);
@@ -28,6 +28,7 @@ private:
 
     QStringList categoriesList() const;
     QString m_iconPath;
+    int m_option;
 
 private slots:
     void appIconClick();

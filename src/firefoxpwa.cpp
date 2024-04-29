@@ -150,6 +150,27 @@ QString Firefoxpwa::searchAppID(QString name)
     return idApp;
 }
 
+App* Firefoxpwa::searchAppForID(QString idApp)
+{
+    App *app = new App();
+    QList<App*> listApps = Firefoxpwa::listApps();
+
+    for(int i=0; i<listApps.size(); i++)
+    {
+        app = listApps.at(i);
+
+        if(app->id() == idApp)
+        {
+            app = listApps.at(i);
+            i = listApps.size();
+        }
+
+    }
+
+
+    return app;
+}
+
 QList<App*> Firefoxpwa::searchApp(QString name) const
 {
     App *app = new App();
@@ -356,10 +377,15 @@ QList<App*> Firefoxpwa::listApps() const
 
                 QJsonValue valueConfig = valueApp.toObject().value("config");
                 name = valueConfig["name"].toString();
+                description = valueConfig["description"].toString();
                 address = valueConfig["document_url"].toString();
 
                 QJsonValue valueManifest = valueApp.toObject().value("manifest").toObject();
-                description = valueManifest["description"].toString();
+
+                if(description == "None")
+                {
+                    description = valueManifest["description"].toString();
+                }
 
                 if(name.isEmpty()) {
                     name = valueManifest["name"].toString();
@@ -375,7 +401,7 @@ QList<App*> Firefoxpwa::listApps() const
                 nameProfile = nameProfile + " (" + idProfile + ")";
                 iconPath = "FFPWA-" + id;
 
-                listApps.append(new App(iconPath, name, address, id, description, nameProfile));
+                listApps.append(new App(iconPath, name, address, id, description, idProfile));
 
             }
         }
@@ -386,7 +412,8 @@ QList<App*> Firefoxpwa::listApps() const
 
 void Firefoxpwa::editApp(App app, QString iconPath)
 {
-    Utils::createIcon(app.id(), iconPath);
+    //Utils::createIcon(app.id(), iconPath);
+    // firefoxpwa site update 01HW3PDDNVZQK9GMHD4Q0ST18Z --name Twitch --description "You’re Already One Of Us"
 
     QStringList args;
     args << "site" << "update" << app.id() <<"--name" << app.name() <<"--description" << app.description() <<"--no-manifest-updates";

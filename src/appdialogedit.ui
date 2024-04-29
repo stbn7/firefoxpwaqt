@@ -161,14 +161,23 @@
     </size>
    </property>
   </widget>
-  <widget class="QTextEdit" name="lnEditDescription">
+  <widget class="QLineEdit" name="lnEditDescription">
    <property name="geometry">
     <rect>
      <x>170</x>
      <y>280</y>
      <width>241</width>
-     <height>81</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>220</width>
+     <height>28</height>
+    </size>
+   </property>
+   <property name="placeholderText">
+    <string/>
    </property>
   </widget>
  </widget>

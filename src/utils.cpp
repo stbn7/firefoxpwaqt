@@ -52,25 +52,56 @@ QList<QString> Utils::AppData()
 
 }
 
-void Utils::createIcon(QString idApp, QString iconPath)
+void Utils::createIcon(App app, QString iconPath)
 {
-    QString path = QDir::homePath() + "/.local/share/icons/";
-    path = path.append(QIcon::themeName()) + "/apps/scalable/";
-    path = path + "FFPWA-" + idApp + ".svg";
+    QString scalablePath = QDir::homePath() + "/.local/share/icons/hicolor/scalable/apps/FFPWA-" + app.id() + ".svg";
+    QDir dirSource(iconPath);
+    QFile file (scalablePath);
+    QDir dirDest(scalablePath);
 
-    QString sourcePath = iconPath;
-    QDir dirSource(path);
-    QDir dirFile(sourcePath);
-    QFile file (path);
-
-    if(!dirSource.absoluteFilePath(path).isEmpty())
+    if(!dirDest.absoluteFilePath(scalablePath).isEmpty())
     {
         file.remove();
     }
 
-    bool status = QFile::copy(sourcePath, path);
+    //QFile::copy(source,dest);
+    bool status = QFile::copy(iconPath,scalablePath);
+    Utils::removeFolder();
 
 }
+
+void Utils::removeFolder()
+{
+    QDir hicolorX16 = QDir::homePath() + "/.local/share/icons/hicolor/16x16/";
+    QDir hicolorX24 = QDir::homePath() + "/.local/share/icons/hicolor/24x24/";
+    QDir hicolorX32 = QDir::homePath() + "/.local/share/icons/hicolor/32x32/";
+    QDir hicolorX48 = QDir::homePath() + "/.local/share/icons/hicolor/48x48/";
+    QDir hicolorX60 = QDir::homePath() + "/.local/share/icons/hicolor/60x60/";
+    QDir hicolorX64 = QDir::homePath() + "/.local/share/icons/hicolor/64x64/";
+    QDir hicolorX90 = QDir::homePath() + "/.local/share/icons/hicolor/90x90/";
+    QDir hicolorX128 = QDir::homePath() + "/.local/share/icons/hicolor/128x128/";
+    QDir hicolorX144 = QDir::homePath() + "/.local/share/icons/hicolor/144x144/";
+    QDir hicolorX180 = QDir::homePath() + "/.local/share/icons/hicolor/180x180/";
+    QDir hicolorX192 = QDir::homePath() + "/.local/share/icons/hicolor/192x192/";
+    QDir hicolorX256 = QDir::homePath() + "/.local/share/icons/hicolor/256x256/";
+    QDir hicolorX512 = QDir::homePath() + "/.local/share/icons/hicolor/512x512/";
+
+    hicolorX16.removeRecursively();
+    hicolorX24.removeRecursively();
+    hicolorX32.removeRecursively();
+    hicolorX48.removeRecursively();
+    hicolorX60.removeRecursively();
+    hicolorX64.removeRecursively();
+    hicolorX90.removeRecursively();
+    hicolorX128.removeRecursively();
+    hicolorX144.removeRecursively();
+    hicolorX180.removeRecursively();
+    hicolorX192.removeRecursively();
+    hicolorX256.removeRecursively();
+    hicolorX512.removeRecursively();
+}
+
+
 
 //Create apps refrescar lista
 // void newappdialog::deleteShortcut(app *app)
