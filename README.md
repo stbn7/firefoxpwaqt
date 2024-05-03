@@ -14,5 +14,5 @@
 - Qt version 6.6.2
 
 
-Probado en KDE neon 6.0.
+Probado en KDE neon 6.0 con Qt Version 6.7.0
 
