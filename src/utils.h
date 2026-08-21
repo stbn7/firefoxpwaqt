@@ -1,9 +1,12 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <QObject>
 #include <QDir>
 #include <QFile>
+#include <QDirIterator>
+#include <QObject>
+#include <QStandardPaths>
+#include <QTextStream>
 
 
 #include "app.h"
@@ -20,8 +23,15 @@ public:
     static void createIcon(QString idApp, QString iconPath);
     static void updateDescription(QString description, QString newDescription);
 
-    static void createIcon(App app, QString rootPath);
-    static void removeFolder();
+    static void updateIcons();
+    static void createIconFile(QString app);
+    static QString searchIcons(QString idApp);
+    static void removeIconFile();
+
+    static QString darkMode();
+    static QString lightMode();
+
+    static bool copyResources();
 
 private:
     QList<App*> m_appList;

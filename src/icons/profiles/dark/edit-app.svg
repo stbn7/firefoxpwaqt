@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="edit.svg"
+   inkscape:version="1.4.3 (1:1.4.3+202512261035+0d15f75042)"
+   xml:space="preserve"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="25.40625"
+     inkscape:cx="7.3407134"
+     inkscape:cy="9.7416974"
+     inkscape:window-width="1920"
+     inkscape:window-height="1008"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" /><defs
+     id="defs3051"><style
+       type="text/css"
+       id="current-color-scheme">
+      .ColorScheme-Text {
+        color:#232629;
+      }
+      </style><style
+       type="text/css"
+       id="current-color-scheme-56">
+            .ColorScheme-Text {
+                color:#232629;
+            }
+        </style><style
+       id="current-color-scheme-5"
+       type="text/css">.ColorScheme-Text { color:#363636; }</style><linearGradient
+       id="fluentColorAddCircle160"
+       x1="2.429"
+       x2="10.71"
+       y1="4.25"
+       y2="12.854"
+       gradientUnits="userSpaceOnUse"><stop
+         stop-color="#52D17C"
+         id="stop2" /><stop
+         offset="1"
+         stop-color="#22918B"
+         id="stop3" /></linearGradient><linearGradient
+       id="fluentColorAddCircle161"
+       x1="6.125"
+       x2="7.966"
+       y1="5.612"
+       y2="12.111"
+       gradientUnits="userSpaceOnUse"><stop
+         stop-color="#fff"
+         id="stop4" /><stop
+         offset="1"
+         stop-color="#E3FFD9"
+         id="stop5" /></linearGradient><linearGradient
+       id="fluentColorAddCircle160-9"
+       x1="2.429"
+       x2="10.71"
+       y1="4.25"
+       y2="12.854"
+       gradientUnits="userSpaceOnUse"><stop
+         stop-color="#52D17C"
+         id="stop2-1" /><stop
+         offset="1"
+         stop-color="#22918B"
+         id="stop3-2" /></linearGradient><linearGradient
+       id="fluentColorAddCircle161-7"
+       x1="6.125"
+       x2="7.966"
+       y1="5.612"
+       y2="12.111"
+       gradientUnits="userSpaceOnUse"><stop
+         stop-color="#fff"
+         id="stop4-0" /><stop
+         offset="1"
+         stop-color="#E3FFD9"
+         id="stop5-9" /></linearGradient><style
+       id="current-color-scheme-3"
+       type="text/css">.ColorScheme-Text { color:#363636; }</style></defs><style
+     type="text/css"
+     id="current-color-scheme-1">
+        .ColorScheme-Text {
+            color:#232629;
+        }
+    </style><path
+     fill="currentColor"
+     d="m 14.121223,2.110019 a 2.3696324,2.3696324 0 0 0 -3.352758,0 L 3.6487144,9.2297691 A 2.6771419,2.6771419 0 0 0 2.9504868,10.454381 l -0.7868626,3.062433 a 0.45221992,0.45221992 0 0 0 0.5517083,0.5499 L 5.7768613,13.280756 A 2.6680975,2.6680975 0 0 0 7.0014728,12.582528 L 14.121223,5.4627775 a 2.3696324,2.3696324 0 0 0 0,-3.3527585 m -2.713319,0.639439 a 1.466455,1.466455 0 1 1 2.07388,2.0738805 L 12.777226,5.5278972 10.703345,3.4540166 Z M 10.063906,4.0934556 12.137787,6.1673361 6.3620339,11.943089 A 1.7636577,1.7636577 0 0 1 5.5516558,12.404353 L 3.2299587,13.001284 3.826889,10.679587 A 1.7546133,1.7546133 0 0 1 4.2881533,9.8692091 Z"
+     id="path1-7"
+     style="stroke-width:0.90444;fill:#dfdfdf;fill-opacity:1" /></svg>

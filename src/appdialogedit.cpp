@@ -8,6 +8,7 @@ AppDialogEdit::AppDialogEdit(QWidget *parent, QString idApp)
 {
     ui->setupUi(this);
 
+
     QObject::connect(ui->appIcon, &QPushButton::pressed,
                      this, &AppDialogEdit::appIconClick);
     QObject::connect(ui->buttonBox, &QDialogButtonBox::rejected,
@@ -22,7 +23,7 @@ AppDialogEdit::AppDialogEdit(QWidget *parent, QString idApp)
                      this, &AppDialogEdit::acceptedButtonActive);
 
     Firefoxpwa *pwa = new Firefoxpwa();
-    App *app = new App();
+    App app(*pwa->searchAppForID(idApp));
 
     ui->buttonBox->setMinimumHeight(30);
 
@@ -30,13 +31,30 @@ AppDialogEdit::AppDialogEdit(QWidget *parent, QString idApp)
     while(buttons.size())
         buttons.takeFirst()->setMinimumHeight(ui->buttonBox->minimumHeight());
 
-    app = pwa->searchAppForID(idApp);
 
-    this->setApp(app);
+    this->setApp(&app);
 
-    ui->appIcon->setIcon(QIcon::fromTheme(app->icon()));
-    ui->lnEditName->setText(app->name());
-    ui->lnEditDescription->setText(app->description());
+    if(app.icon() == "")
+    {
+      ui->appIcon->setIcon(QIcon(QDir::homePath() + "/.local/share/firefoxpwaqt/icons/apps/file-unknown.svg"));
+    }else if(app.icon().isNull())
+    {
+       ui->appIcon->setIcon(QIcon(QDir::homePath() + "/.local/share/firefoxpwaqt/icons/apps/file-unknown.svg"));
+    }else
+    {
+        if(app.icon().contains("/"))
+        {
+            ui->appIcon->setIcon(QIcon(app.icon()));
+
+        }else
+        {
+            ui->appIcon->setIcon(QIcon::fromTheme(app.icon()));
+        }
+
+    }
+
+    ui->lnEditName->setText(app.name());
+    ui->lnEditDescription->setText(app.description());
     ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
 }
 
@@ -61,14 +79,23 @@ void AppDialogEdit::appIconClick()
     QString iconPath = QFileDialog::getOpenFileName(this, "Select Icon", QDir::homePath() + "/.local/share/icons", filter);
     this->setIconPath(iconPath);
 
+    App app(this->app());
+
     if(iconPath.isEmpty())
     {
-        ui->appIcon->setIcon(QIcon::fromTheme(this->app().icon()));
+        if(app.icon().contains("/"))
+        {
+            ui->appIcon->setIcon(QIcon(app.icon()));
 
+        }else
+        {
+            ui->appIcon->setIcon(QIcon::fromTheme(app.icon()));
+        }
     }
     else
     {
-        ui->appIcon->setIcon(QIcon::fromTheme(iconPath));
+        ui->appIcon->setIcon(QIcon(iconPath));
+
     }
 }
 
@@ -79,8 +106,16 @@ void AppDialogEdit::acceptedButtonClick()
     app.setName(ui->lnEditName->text());
     app.setDescription(ui->lnEditDescription->text());
 
-    Utils::createIcon(app,this->iconPath());
-    Firefoxpwa::editApp(app, this->iconPath());
+    QString nameIcon = this->iconPath();
+
+    if(!nameIcon.isEmpty())
+    {
+     this->app().setIcon(nameIcon);
+     Firefoxpwa::editApp(app, nameIcon);
+    }else
+    {
+        Firefoxpwa::editApp(app, this->app().icon());
+    }
 
     this->close();
 }

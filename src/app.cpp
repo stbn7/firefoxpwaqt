@@ -3,8 +3,8 @@
 App::App()
 {}
 
-App::App(QString &iconPath, QString &name, QString &address, QString &id, QString description, QString &profile) :
-    m_iconPath(iconPath),
+App::App(QString &iconName, QString &name, QString &address, QString &id, QString &description, QString &profile) :
+    m_iconName(iconName),
     m_name(name),
     m_address(address),
     m_id(id),
@@ -63,12 +63,12 @@ void App::setDescription(const QString &description)
 
 QString App::icon()
 {
-    return m_iconPath;
+    return m_iconName;
 }
 
-void App::setIcon(QString iconPath)
+void App::setIcon(QString &iconName)
 {
-    m_iconPath = iconPath;
+    m_iconName = iconName;
 }
 
 QString App::profile() const

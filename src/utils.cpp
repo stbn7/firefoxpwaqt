@@ -2,8 +2,7 @@
 
 #include "QDebug"
 
-#include "profile.h"
-#include "qicon.h"
+#include <qapplication.h>
 
 Utils::Utils()
 {
@@ -22,24 +21,31 @@ void Utils::createShortcut(App *app)
 
     QByteArray content = "[Desktop Entry]\n"
                          "Type=Application\n"
-                         "Version=0.01\n"
+                         "Version=1.4\n"
                          "Name=" + name + "\n"
                                   "Comment=" + comment + "\n"
                                      "Keywords=;\n"
                                      "Categories=GTK;WebApps;;\n"
                                      "Icon=" + pathIcon + "\n"
                                       "Exec=/usr/bin/firefoxpwa site launch " + idApp + " --protocol %u\n"
-                                   "Actions=\n"
+                                   "Actions=None\n"
                                    "MimeType=\n"
                                    "Terminal=false\n"
                                    "StartupNotify=true\n";
     //"StartupWMClass=" + name;
 
     file.setFileName(QDir::homePath() + "/.local/share/applications/" + "FFPWA-" + idApp + ".desktop");
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    file.write(content);
-    file.flush();
-    file.close();
+
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        file.write(content);
+        file.flush();
+        file.close();
+    }else
+    {
+        qWarning() << "No se pudo abrir el archivo para escritura:" << file.fileName();
+    }
+
 }
 
 QList<QString> Utils::AppData()
@@ -52,65 +58,207 @@ QList<QString> Utils::AppData()
 
 }
 
-void Utils::createIcon(App app, QString iconPath)
+QString Utils::darkMode()
 {
-    QString scalablePath = QDir::homePath() + "/.local/share/icons/hicolor/scalable/apps/FFPWA-" + app.id() + ".svg";
-    QDir dirSource(iconPath);
-    QFile file (scalablePath);
-    QDir dirDest(scalablePath);
+    qDebug() << "Activated mode dark";
 
-    if(!dirDest.absoluteFilePath(scalablePath).isEmpty())
+
+        QString style = R"(
+            QListWidget {
+                border: none;
+                outline: none;
+                border-radius: 10px;
+            }
+            QListWidget::item {
+                border-radius: 5px;
+            }
+
+            QListWidget::item:selected {
+                background-color: #cccccc;
+                border: none;
+            }
+
+            QListWidget::item:hover {
+                background-color: #f0f0f0;
+            }
+
+            QListWidget::item:selected:hover {
+                background-color: #cccccc;
+            }
+        )";
+
+
+
+    return style;
+}
+
+QString Utils::lightMode()
+{
+    qDebug() << "Activated mode light";
+
+
+    QString style = R"(
+            QListWidget {
+                border: none;
+                outline: none;
+                border-radius: 10px;
+            }
+            QListWidget::item {
+                border-radius: 5px;
+            }
+
+            QListWidget::item:selected {
+                background-color: #cccccc;
+                border: none;
+            }
+
+            QListWidget::item:hover {
+                background-color: #f0f0f0;
+            }
+
+            QListWidget::item:selected:hover {
+                background-color: #cccccc;
+            }
+        )";
+
+
+
+    return style;
+}
+
+void Utils::updateIcons()
+{
+    Firefoxpwa firefoxpwa;
+    QList<QString> idApps;
+
+    QList<App*> listApps;
+    listApps = firefoxpwa.listApps();
+
+
+    for(int i=0; i<listApps.size(); i++)
     {
-        file.remove();
+        App *app = listApps.at(i);
+
+        QString dirApplication = QDir::homePath() + "/.local/share/applications/FFPWA-" + app->id() + ".desktop";
+        QFile file(dirApplication);
+
+
+        if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
+            qWarning() << "No se pudo abrir el archivo A:" << dirApplication;
+            //return QString();
+        }else
+
+        {
+            QTextStream in(&file);
+            while (!in.atEnd()) {
+                QString line = in.readLine();
+                if (line.contains("Icon=")) {
+                    Utils::createIconFile(app->id() + ";" + line);
+                    file.close();
+                }
+            }
+        }
+        file.close();
+
+    }
+}
+
+void Utils::createIconFile(QString app)
+{
+    QString dirIconPath = QDir::homePath() + "/.config/firefoxpwaqt";
+
+    QFile file(dirIconPath);
+    if (file.open(QIODevice::Append | QIODevice::Text)) {
+        QTextStream out(&file);
+            app.remove("Icon=");
+            out << app<< Qt::endl;
+        }
+        file.close();
+}
+
+QString Utils::searchIcons(QString idApp)
+{
+    QString dirIconPath = QDir::homePath() + "/.config/firefoxpwaqt";
+    QFile file(dirIconPath);
+
+    if (!file.open(QIODevice::ReadWrite | QIODevice::Text)) {
+        qWarning() << "Error: No se pudo abrir el archivo en BBB" << dirIconPath;
+        return QString();
     }
 
-    //QFile::copy(source,dest);
-    bool status = QFile::copy(iconPath,scalablePath);
-    Utils::removeFolder();
+    QTextStream stream(&file);
 
+    while (!stream.atEnd()) {
+        QString linea = stream.readLine();
+
+        if (linea.contains(idApp, Qt::CaseInsensitive)) {
+            file.close();
+            return linea;
+            qDebug() << linea;
+        }
+    }
+
+    file.close();
+    return QString();
 }
 
-void Utils::removeFolder()
+void Utils::removeIconFile()
 {
-    QDir hicolorX16 = QDir::homePath() + "/.local/share/icons/hicolor/16x16/";
-    QDir hicolorX24 = QDir::homePath() + "/.local/share/icons/hicolor/24x24/";
-    QDir hicolorX32 = QDir::homePath() + "/.local/share/icons/hicolor/32x32/";
-    QDir hicolorX48 = QDir::homePath() + "/.local/share/icons/hicolor/48x48/";
-    QDir hicolorX60 = QDir::homePath() + "/.local/share/icons/hicolor/60x60/";
-    QDir hicolorX64 = QDir::homePath() + "/.local/share/icons/hicolor/64x64/";
-    QDir hicolorX90 = QDir::homePath() + "/.local/share/icons/hicolor/90x90/";
-    QDir hicolorX128 = QDir::homePath() + "/.local/share/icons/hicolor/128x128/";
-    QDir hicolorX144 = QDir::homePath() + "/.local/share/icons/hicolor/144x144/";
-    QDir hicolorX180 = QDir::homePath() + "/.local/share/icons/hicolor/180x180/";
-    QDir hicolorX192 = QDir::homePath() + "/.local/share/icons/hicolor/192x192/";
-    QDir hicolorX256 = QDir::homePath() + "/.local/share/icons/hicolor/256x256/";
-    QDir hicolorX512 = QDir::homePath() + "/.local/share/icons/hicolor/512x512/";
-
-    hicolorX16.removeRecursively();
-    hicolorX24.removeRecursively();
-    hicolorX32.removeRecursively();
-    hicolorX48.removeRecursively();
-    hicolorX60.removeRecursively();
-    hicolorX64.removeRecursively();
-    hicolorX90.removeRecursively();
-    hicolorX128.removeRecursively();
-    hicolorX144.removeRecursively();
-    hicolorX180.removeRecursively();
-    hicolorX192.removeRecursively();
-    hicolorX256.removeRecursively();
-    hicolorX512.removeRecursively();
+    QString dirIconPath = QDir::homePath() + "/.config/firefoxpwaqt";
+    QFile::remove(dirIconPath);
 }
 
+bool Utils::copyResources()
+{
+
+    QString desDir = QStandardPaths::writableLocation(
+                             QStandardPaths::HomeLocation) + "/.local/share/firefoxpwaqt/";
+
+    QDir().mkpath(desDir);
+
+    QDirIterator it(":/icons", QDirIterator::Subdirectories);
+
+    while (it.hasNext()) {
+        it.next();
+
+        if (it.fileInfo().isFile()) {
+            QString relativePath = it.filePath().mid(2);
+
+            // Ruta de destino completa
+            QString destinationPath = desDir + "/" + relativePath;
+
+            // Crea los subdirectorios necesarios
+            QFileInfo infoDestino(destinationPath);
+            QDir().mkpath(infoDestino.absolutePath());
+
+            // Copia el archivo
+            if (!QFile::copy(it.filePath(), destinationPath)) {
+                qWarning() << "Copy Failed:" << it.filePath()
+                << "a" << destinationPath;
+                return false;
+            } else {
+                qDebug() << "Copied:" << relativePath;
+            }
+        }
+    }
 
 
-//Create apps refrescar lista
-// void newappdialog::deleteShortcut(app *app)
-// {
-//     QString nameShortcut = "FFPWA-" + app->id() + ".desktop";
-//     QDir dirApplication = QDir(QDir::homePath() + "/.local/share/applications/");
-//     dirApplication.remove(nameShortcut);
+    QDirIterator permIterator(desDir + "/icons", QDirIterator::Subdirectories);
+    while (permIterator.hasNext()) {
+        permIterator.next();
+        QString ruta = permIterator.filePath();
+        if (ruta != "." && ruta != "..") {
+            QFile::setPermissions(ruta,
+                                  QFileDevice::ReadUser   | QFileDevice::WriteUser   | QFileDevice::ExeUser |
+                                      QFileDevice::ReadGroup  | QFileDevice::WriteGroup  | QFileDevice::ExeGroup |
+                                      QFileDevice::ReadOther  | QFileDevice::WriteOther  | QFileDevice::ExeOther);
+        }
+    }
 
-// }
+
+
+    return true;
+}
 
 
 

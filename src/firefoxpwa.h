@@ -9,6 +9,8 @@
 #include "QJsonParseError"
 #include <QFile>
 #include <QDir>
+#include <QDesktopServices>
+
 
 #include "profile.h"
 #include "app.h"

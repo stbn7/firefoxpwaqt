@@ -1,4 +1,4 @@
-#include "firefoxpwa.h"
+ #include "firefoxpwa.h"
 
 Firefoxpwa::Firefoxpwa()
 {
@@ -94,7 +94,7 @@ void Firefoxpwa::removeApp(QString idApp)
 
 void Firefoxpwa::lauchApp(QString idApp)
 {
-    QStringList args;
+    /**QStringList args;
     args << "site" << "launch" << idApp;
 
     QProcess *process = new QProcess;
@@ -103,7 +103,10 @@ void Firefoxpwa::lauchApp(QString idApp)
     process->start();
     process->waitForFinished();
     QString tmpResults(process->readAllStandardOutput());
-    process->close();
+    process->close();**/
+
+    QString appName = "FFPWA-" + idApp + ".desktop";
+    QProcess::startDetached("gtk-launch", { appName });
 
 }
 
@@ -125,6 +128,7 @@ QList<QString> Firefoxpwa::listAppId()
 
     delete app;
     return idApps;
+
 }
 
 QString Firefoxpwa::searchAppID(QString name)
@@ -341,7 +345,7 @@ QList<App*> Firefoxpwa::listApps() const
     QList<App*> listApps;
     QList<QString> keysListApps;
 
-    QString name, address, id, description, idProfile, nameProfile, iconPath;
+    QString name, address, id, description, idProfile, nameProfile, iconName;
 
     QJsonParseError parseError;
     QJsonDocument configJson;
@@ -399,22 +403,25 @@ QList<App*> Firefoxpwa::listApps() const
                 }
 
                 nameProfile = nameProfile + " (" + idProfile + ")";
-                iconPath = "FFPWA-" + id;
 
-                listApps.append(new App(iconPath, name, address, id, description, idProfile));
+                iconName = Utils::searchIcons(id);
+
+                if(!iconName.isEmpty())
+                {
+                    iconName = iconName.remove(id + ";");
+                }
+
+                listApps.append(new App(iconName, name, address, id, description, idProfile));
 
             }
         }
     }
-
     return listApps;
 }
 
 void Firefoxpwa::editApp(App app, QString iconPath)
 {
-    //Utils::createIcon(app.id(), iconPath);
-    // firefoxpwa site update 01HW3PDDNVZQK9GMHD4Q0ST18Z --name Twitch --description "You’re Already One Of Us"
-
+    app.setIcon(iconPath);
     QStringList args;
     args << "site" << "update" << app.id() <<"--name" << app.name() <<"--description" << app.description() <<"--no-manifest-updates";
 
@@ -425,6 +432,11 @@ void Firefoxpwa::editApp(App app, QString iconPath)
     process->waitForFinished();
     QString tmpResults(process->readAllStandardOutput());
     process->close();
-    qDebug() << tmpResults;
+    //qDebug() << tmpResults;
+    Utils::createShortcut(&app);
+    Utils::removeIconFile();
+    Utils::updateIcons();
+
+
 }
 

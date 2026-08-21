@@ -16,7 +16,7 @@ ProfileDialog::ProfileDialog(QWidget *parent) :
                      this, &ProfileDialog::buttonBoxActive);
 
 
-    ui->appIcon->setIcon(QIcon(":/icons/foxy"));
+    ui->appIcon->setIcon(QIcon("/home/stbn7/.local/share/firefoxpwaqt/icons/profiles/dark/foxy"));
     ui->buttonBox->setMinimumHeight(30);
 
     QList<QAbstractButton *> buttons = ui->buttonBox->buttons();

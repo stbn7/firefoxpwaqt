@@ -12,6 +12,7 @@
 #include <QResource>
 
 
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -24,19 +25,28 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private:
-    Ui::MainWindow *ui;
+    void colorSchemeChanged(bool enabled);
+    QString iconColor(bool enabled);
+
+    QString darkMode() const;
+    void setDarkMode(const QString &darkMode);
 
     void showListApps();
     void showListProfile();
     void resetDataLabel();
-    void editProfile();
 
+
+private:
+    Ui::MainWindow *ui;
+
+    QString m_darkMode;
+
+
+    void editProfile();
 
     void showAppDataBtn1();
     void showAppDataBtn2();
     void showAppDataBtn3();
-
 
 private slots:
     void addAppButtonClicked();
@@ -47,6 +57,7 @@ private slots:
     void showAppData(int option);
     void showProfileData();
     void editButtonClicked();
+    void changeButtonClicked();
 
 
     //void on_actionNewApp_triggered();

@@ -21,7 +21,6 @@ AppDialog::AppDialog(QWidget *parent, int option) :
 
     Firefoxpwa *pwa = new Firefoxpwa();
 
-    ui->appIcon->setIcon(QIcon(":/icons/foxy.svg"));
     ui->cmbBoxProfiles->addItem("Automatically Create a New Profile");
     ui->cmbBoxProfiles->addItems(pwa->listProfileNames());
     ui->cmbBoxProfiles->setCurrentIndex(option);
@@ -69,16 +68,17 @@ void AppDialog::appIconClick()
 
     if(iconPath.isEmpty())
     {
-        ui->appIcon->setIcon(QIcon(":/icons/foxy.svg"));
+        //ui->appIcon->setIcon(QIcon(":/icons/foxy.svg"));
     }
     else
     {
-        ui->appIcon->setIcon(QIcon::fromTheme(iconPath));
+        ui->appIcon->setIcon(QIcon(iconPath));
     }
 }
 void AppDialog::createButtonClick()
 {
     QString idProfile;
+    QString idApp;
     App *app = new App();
     Firefoxpwa *pwa = new Firefoxpwa();
 
@@ -91,6 +91,12 @@ void AppDialog::createButtonClick()
     {
         idProfile = pwa->createProfile(app->name(), app->description());
         app->setId(pwa->createApp(app->address(),idProfile));
+        idApp = app->id();
+
+        App app(*pwa->searchAppForID(idApp));
+        app.setName(ui->lnEditName->text());
+        app.setDescription(ui->lnEditDescription->text());
+        pwa->editApp(app,AppDialog::iconPath());
     }
     else
     {
@@ -99,12 +105,15 @@ void AppDialog::createButtonClick()
         idProfile = pwa->searchProfileID(nameProfile);
         app->setId(pwa->createApp(app->address(),idProfile));
 
+        idApp = app->id();
+
+        App app(*pwa->searchAppForID(idApp));
+        app.setName(ui->lnEditName->text());
+        app.setDescription(ui->lnEditDescription->text());
+        pwa->editApp(app,AppDialog::iconPath());
+
     }
 
-    Utils::createIcon(*app,AppDialog::iconPath());
-
-    //NewAppDialog::deleteShortcut(newApp);
-    //NewAppDialog::createAppShortcut(newApp);
 
     delete pwa;
     this->close();

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include <QStyleHints>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -29,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->btnEditApp, &QPushButton::clicked,
                      this, &MainWindow::editButtonClicked);
 
+    QObject::connect(ui->btnChanged, &QPushButton::clicked,
+                     this, &MainWindow::changeButtonClicked);
+
     QObject::connect(ui->btnEditProfile, &QPushButton::clicked,
                      this, &MainWindow::editProfile);
 
@@ -41,22 +45,44 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(ui->btnApp3, &QPushButton::clicked,
                      this, &MainWindow::showAppDataBtn3);
 
+    const QPalette p = QGuiApplication::palette();
+    const QColor bg = p.color(QPalette::Window);
 
-    this->showListProfile();
+
+    QFile workPath(QDir::homePath() + "/.local/share/firefoxpwaqt/icons");
+
+    if(!workPath.exists())
+    {
+        Utils::copyResources();
+    }
+
+
+    ui->btnChanged->setHidden(true);
+    ui->btnTool->setHidden(true);
+
+    Utils::removeIconFile();
+    Utils::updateIcons();
+
+    if(bg.lightness() < 128)
+    {
+        ui->btnAddApp->setIcon(QIcon(QDir::homePath() + "/.local/share/firefoxpwaqt/icons/profiles/dark/add.svg"));
+        ui->btnAddProfile->setIcon(QIcon(QDir::homePath() + "/.local/share/firefoxpwaqt/icons/profiles/dark/add.svg"));
+    }else
+    {
+        ui->btnAddApp->setIcon(QIcon(QDir::homePath() + "/.local/share/firefoxpwaqt/icons/profiles/light/add.svg"));
+        ui->btnAddProfile->setIcon(QIcon(QDir::homePath() + "/.local/share/firefoxpwaqt/icons/profiles/light/add.svg"));
+    }
+
     ui->stackedWidget->setCurrentIndex(0);
     ui->btnDeleteProfile->setEnabled(false);
     ui->btnEditProfile->setHidden(true);
     ui->btnEditProfile->setEnabled(false);
+    ui->btnChanged->setEnabled(false);
 
     QLabel *dockTitle = new QLabel("Profiles", ui->dockWidget);
     dockTitle->setStyleSheet("font-size: 10pt; padding-left: 10px; padding-top: 20px;");
     ui->dockWidget->setTitleBarWidget(dockTitle);
 
-    this->showListApps();
-
-
-
-    //new QListWidgetItem(QIcon::fromTheme("applications-all"),"Applications",ui->listOption);
 }
 
 
@@ -102,6 +128,7 @@ void MainWindow::launchButtonClicked()
     Firefoxpwa *pwa = new Firefoxpwa();
     QString idApp = ui->lblIdApp->text().remove("<b>ID: </b>");
     pwa->lauchApp(idApp);
+    pwa->listAppId();
 }
 
 void MainWindow::editButtonClicked()
@@ -113,6 +140,8 @@ void MainWindow::editButtonClicked()
     {
         //ui->listWApps->clear();
         this->showListApps();
+        ui->stackedWidget->setCurrentIndex(2);
+        MainWindow::showProfileData();
     }
 
 }
@@ -121,20 +150,25 @@ void MainWindow::showListApps()
 {
     App *app = new App();
     Firefoxpwa *pwa = new Firefoxpwa();
+    QString iconPath;
+
     QList<App*> listApp = pwa->listApps();
-    QString appIcon;
 
 
     for(int i=0; i<listApp.size(); i++)
     {
-        app = listApp.at(i);
+        auto app = listApp.at(i);
+        QString iconPath = QDir::homePath() + "/local/share/icons/" + QIcon::themeName() + "/apps/48/" + app->icon();//Change
+        QFile file(iconPath);
 
-        if(QIcon::fromTheme(app->icon()).isNull())
+        if(file.exists())
         {
-           // new QListWidgetItem(QIcon::fromTheme("foxy"),app->name(),ui->listWApps);
+            auto *item = new QListWidgetItem(QIcon::fromTheme(app->icon()),app->name(),ui->listWApps);
+            item->setSizeHint(QSize(200, 25));
         }else
         {
-            //new QListWidgetItem(QIcon::fromTheme(app->icon()),app->name(),ui->listWApps);
+            auto *item = new QListWidgetItem(QIcon(":/icons/profiles/" + MainWindow::darkMode() + "/foxy"),app->name(),ui->listWApps);
+            item->setSizeHint(QSize(200, 25));
         }
 
 
@@ -147,27 +181,35 @@ void MainWindow::showListApps()
 void MainWindow::showListProfile()
 {
     Firefoxpwa *pwa = new Firefoxpwa();
-    Profile *profile = new Profile();
+    //Profile *profile = new Profile();
     QString iconPath;
 
 
     QList<Profile*> listProfile = pwa->listProfile();
 
+
+    std::sort(listProfile.begin(), listProfile.end(),
+          [](const Profile* a, const Profile* b) {
+        return a->name().localeAwareCompare(b->name()) < 0;
+    });
+
     for(int i=0; i<listProfile.size();i++)
     {
-        profile = listProfile.at(i);
-        QString iconPath = QDir::homePath() + "/.local/share/icons/firefoxpwaqt/" + profile->name().toLower().split(" ").at(0) + ".svg";
-        QFile path = iconPath;
+        auto profile = listProfile.at(i);
+        QString iconPath = QDir::homePath() + "/.local/share/firefoxpwaqt/icons/profiles/" + MainWindow::darkMode() + "/" + profile->name().toLower() + ".svg";
+        QFile path(iconPath);
 
         if(path.exists())
         {
-            new QListWidgetItem(QIcon(iconPath), profile->name(),ui->listWProfile);
+            auto *item = new QListWidgetItem(QIcon(iconPath), profile->name(),ui->listWProfile);
+            item->setSizeHint(QSize(200, 25));
         }else
         {
-            new QListWidgetItem(QIcon(":/icons/foxy"), profile->name(),ui->listWProfile);
+            auto *item = new QListWidgetItem(QIcon(":/icons/profiles/" + MainWindow::darkMode() + "/foxy"), profile->name(),ui->listWProfile);
+            item->setSizeHint(QSize(200, 25));
         }
     }
-    delete profile;
+
 }
 void MainWindow::showAppDataBtn1()
 {
@@ -186,6 +228,8 @@ void MainWindow::showAppDataBtn3()
 void MainWindow::showAppData(int option)
 {
 
+    ui->btnEditApp->setIcon(QIcon(QDir::homePath() + "/.local/share/firefoxpwaqt/icons/profiles/"  + MainWindow::darkMode() + "/edit-app.svg"));
+    ui->btnLaunch->setIcon(QIcon(QDir::homePath() + "/.local/share/firefoxpwaqt/icons/profiles/"  + MainWindow::darkMode() + "/run.svg"));
     ui->stackedWidget->setCurrentIndex(1);
     ui->btnDeleteProfile->setHidden(true);
     ui->btnEditProfile->setHidden(true);
@@ -220,18 +264,20 @@ void MainWindow::showAppData(int option)
 
         if(app->name() == name && app->profile() == idProfile)
         {
+
+
+
+
             ui->lblNameApp->setText(app->name());
 
-            QString appIcon = QDir::homePath() + "/.local/share/icons/hicolor/scalable/apps/FFPWA-" + app->id() + ".svg";
-            QFile dirIcon(appIcon);
 
-            if(!dirIcon.exists())
+            if(QIcon::fromTheme(app->icon()).isNull())
             {
-                ui->iconApp->setIcon(QIcon(":/icons/foxy"));
+                ui->iconApp->setIcon(QIcon(QDir::homePath() + "/.local/share/firefoxpwaqt/icons/apps/file-unknown.svg"));
             }
             else
             {
-                ui->iconApp->setIcon(QIcon(appIcon));
+                ui->iconApp->setIcon(QIcon::fromTheme(app->icon()));
             }
             
             
@@ -274,15 +320,15 @@ void MainWindow::showProfileData()
             apps = profile->apps();
             ui->lblNameProfile->setText(profile->name());
 
-            QString iconPath = QDir::homePath() + "/.local/share/icons/firefoxpwaqt/" + profile->name().toLower().split(" ").at(0) + ".svg";
-            QFile path = iconPath;
+            QString iconPath = QDir::homePath() + "/.local/share/firefoxpwaqt/icons/profiles/" + MainWindow::darkMode() + "/" + profile->name().toLower() + ".svg";
+            QFile path(iconPath);
 
             if(path.exists())
             {
                 ui->iconProfile->setIcon(QIcon(iconPath));
             }else
             {
-                 ui->iconProfile->setIcon(QIcon(":/icons/foxy"));
+                 ui->iconProfile->setIcon(QIcon(QDir::homePath() + "/.local/share/firefoxpwaqt/icons/profiles/" + MainWindow::darkMode() + "/foxy.svg"));
             }
 
             ui->lblDescriptionProfile->setText("Description: " + profile->description());
@@ -380,20 +426,103 @@ void MainWindow::deleteProfileButtonClicked()
         this->showListProfile();
         //ui->listWidgetApps->item(0)->setSelected(true);
         ui->stackedWidget->setCurrentIndex(0);
-        Utils::removeFolder();
     }
     delete pwa;
 }
 
+void MainWindow::changeButtonClicked()
+{
+    ui->listWApps->setEnabled(true);
+    this->showListApps();
+
+}
+
+void MainWindow::colorSchemeChanged(bool enabled)
+{
+    if(enabled)
+    {   //Dark Mode
+        ui->listWProfile->setStyleSheet(R"(
+            QListWidget {
+                border: none;
+                outline: none;
+                border-radius: 10px;
+            }
+            QListWidget::item {
+                border-radius: 5px;
+            }
+
+            QListWidget::item:selected {
+                background-color: #464646;
+                border: none;
+                color: #ffffff;
+            }
+
+            QListWidget::item:hover {
+                background-color: #2a2a2a;
+            }
+
+            QListWidget::item:selected:hover {
+                background-color: #2a2a2a;
+            }
+        )");
+
+        MainWindow::setStyleSheet(R"(
+                background-color: #1c1f1e;
+        )");
+
+
+    }else
+    {   //Ligth Mode
+        ui->listWProfile->setStyleSheet(R"(
+            QListWidget {
+                border: none;
+                outline: none;
+                border-radius: 10px;
+            }
+            QListWidget::item {
+                border-radius: 5px;
+            }
+
+            QListWidget::item:selected {
+                background-color: #eeefef;
+                border: none;
+            }
+
+            QListWidget::item:hover {
+                background-color: #f0f0f0;
+            }
+
+            QListWidget::item:selected:hover {
+                background-color: #cccccc;
+            }
+        )");
+
+        MainWindow::setStyleSheet(R"(
+                background-color: #ffffff;
+        )");
+    }
+
+}
+
+QString MainWindow::iconColor(bool enabled)
+{
+    QString color = "ligth";
+    (enabled == true) ? MainWindow::setDarkMode("dark") : MainWindow::setDarkMode("light");
+    return color;
+}
 void MainWindow::resetDataLabel()
 {
-    // ui->iconApp->setIcon(QIcon::fromTheme(""));
-    // ui->lblDetails->setText("");
-    // ui->lblNameApp->setText("");
-    // ui->lblIdApp->setText("");
-    // ui->lblDescriptionApp->setText("");
-    // ui->lblAddress->setText("");
-    // ui->lblProfile->setText("");
+    ui->listWProfile->clear();
+}
+
+QString MainWindow::darkMode() const
+{
+    return m_darkMode;
+}
+
+void MainWindow::setDarkMode(const QString &darkMode)
+{
+    m_darkMode = darkMode;
 }
 
 

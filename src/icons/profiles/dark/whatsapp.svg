@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="16"
+   height="16"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="whatsapp.svg"
+   inkscape:version="1.4.3 (1:1.4.3+202512261035+0d15f75042)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="17.876543"
+     inkscape:cx="3.0486879"
+     inkscape:cy="17.089434"
+     inkscape:window-width="1920"
+     inkscape:window-height="1008"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <g
+     id="SVGRepo_bgCarrier"
+     stroke-width="0"
+     transform="translate(-4,6)" />
+  <g
+     id="SVGRepo_tracerCarrier"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     transform="translate(-4,6)" />
+  <g
+     id="SVGRepo_bgCarrier-3"
+     stroke-width="0"
+     transform="matrix(0.67201965,0,0,0.67201965,16.559307,-0.49456098)" />
+  <g
+     id="SVGRepo_tracerCarrier-6"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     transform="matrix(0.67201965,0,0,0.67201965,16.559307,-0.49456098)" />
+  <g
+     id="SVGRepo_bgCarrier-36"
+     stroke-width="0"
+     transform="matrix(0.64717018,0,0,0.64717018,0.71018773,0.27475249)" />
+  <g
+     id="SVGRepo_tracerCarrier-7"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     transform="matrix(0.64717018,0,0,0.64717018,0.71018773,0.27475249)" />
+  <g
+     id="SVGRepo_iconCarrier"
+     transform="matrix(0.64717018,0,0,0.64717018,0.71018773,0.27475249)"
+     style="fill:#dfdfdf;fill-opacity:1">
+    <path
+       d="M 2,22 3.41152,16.8691 C 2.54422,15.3639 2.08876,13.6568 2.09099,11.9196 2.08095,6.44549 6.52644,2 11.99,2 c 2.6517,0 5.1415,1.02806 7.0162,2.9034 0.9241,0.91926 1.6565,2.01276 2.1549,3.21714 0.4984,1.20438 0.7528,2.49566 0.7485,3.79906 0,5.4636 -4.4455,9.9091 -9.9096,9.9091 -1.6632,0 -3.28626,-0.4136 -4.73796,-1.2095 z m 5.49424,-3.1651 0.30251,0.1813 c 1.26974,0.7514 2.71785,1.1482 4.19325,1.1492 4.5364,0 8.2363,-3.6992 8.2363,-8.2363 0,-2.19734 -0.8567,-4.27356 -2.4095,-5.8257 C 17.0533,5.33553 16.1453,4.72636 15.1453,4.31101 14.1452,3.89565 13.0728,3.68232 11.99,3.68331 7.44343,3.6839 3.74476,7.38316 3.74476,11.9202 c 0,1.5522 0.43367,3.0748 1.26026,4.3853 l 0.19143,0.3125 -0.83663,3.044 3.13501,-0.8266 z"
+       fill="#000000"
+       data-darkreader-inline-fill=""
+       id="path1"
+       style="fill:#dfdfdf;fill-opacity:1" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="M 9.52024,7.76662 C 9.33885,7.35303 9.13737,7.34298 8.96603,7.34298 8.81477,7.33294 8.65288,7.33294 8.48154,7.33294 c -0.16071,0 -0.43309,0.06027 -0.6647,0.31255 -0.2322,0.2517 -0.86677,0.84668 -0.86677,2.06618 0,1.22013 0.88686,2.39943 1.00798,2.56073 0.12053,0.1613 1.71344,2.7415 4.23395,3.74 2.0963,0.8266 2.52,0.6653 2.9737,0.6145 0.4532,-0.0502 1.4618,-0.5944 1.6733,-1.1793 0.2015,-0.5743 0.2015,-1.0783 0.1412,-1.1794 -0.0603,-0.1004 -0.2322,-0.1613 -0.4738,-0.2924 -0.2523,-0.1206 -1.4618,-0.7256 -1.6934,-0.8065 -0.2322,-0.0804 -0.3935,-0.1206 -0.5548,0.1211 -0.1613,0.2523 -0.6352,0.8065 -0.7858,0.9678 -0.1418,0.1613 -0.2925,0.1814 -0.5347,0.0603 C 12.686,14.1979 11.8895,13.9356 10.9418,13.0889 10.2056,12.4331 9.71167,11.6171 9.56041,11.3755 9.41979,11.1232 9.54032,10.992 9.67149,10.8709 9.78257,10.7604 9.92378,10.579 10.0449,10.4378 10.1654,10.296 10.2056,10.1855 10.2966,10.0242 10.377,9.86292 10.3368,9.71167 10.2765,9.59114 10.2157,9.48006 9.74239,8.25997 9.52024,7.76603 Z"
+       fill="#000000"
+       data-darkreader-inline-fill=""
+       id="path2"
+       style="fill:#dfdfdf;fill-opacity:1" />
+  </g>
+</svg>

@@ -3,10 +3,19 @@
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
+#include <QSettings>
+#include <QStyleHints>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    auto *hints = QGuiApplication::styleHints();
+
+    Qt::ColorScheme cs = Qt::ColorScheme::Dark;
+
+    const QPalette p = QGuiApplication::palette();
+    const QColor bg = p.color(QPalette::Window);
 
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
@@ -18,6 +27,46 @@ int main(int argc, char *argv[])
         }
     }
     MainWindow w;
+
+    if(bg.lightness() < 128)
+    {
+        w.iconColor(true);
+        w.colorSchemeChanged(true);
+        w.showListProfile();
+    }else
+    {
+        w.iconColor(false);
+        w.colorSchemeChanged(false);
+        w.showListProfile();
+    }
+
+
+    QObject::connect(hints, &QStyleHints::colorSchemeChanged,
+                     &a, [&](Qt::ColorScheme cs) {
+                         bool dark = (cs == Qt::ColorScheme::Dark);
+
+                         if(dark)
+                         {
+                             w.iconColor(true);
+                             w.colorSchemeChanged(true);
+                             //borrar ui->listWProfile->clear();
+                             w.resetDataLabel();
+                             w.showListProfile();
+
+
+                         }else
+                         {
+                             w.iconColor(false);
+                             w.colorSchemeChanged(false);
+                             w.resetDataLabel();
+                             w.showListProfile();
+
+                         }
+
+                     });
+
+
+
     w.show();
     return a.exec();
 }

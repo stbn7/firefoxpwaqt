@@ -1,8 +1,30 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/foxy.svg</file>
-        <file>icons/applications-all.svg</file>
-        <file>icons/external-link.svg</file>
-        <file>icons/template.svg</file>
+        <file>icons/apps/default.svg</file>
+        <file>icons/profiles/dark/foxy.svg</file>
+        <file>icons/profiles/dark/instagram.svg</file>
+        <file>icons/profiles/dark/linkedin.svg</file>
+        <file>icons/profiles/dark/settings.svg</file>
+        <file>icons/profiles/dark/twitch.svg</file>
+        <file>icons/profiles/dark/whatsapp.svg</file>
+        <file>icons/profiles/dark/x.svg</file>
+        <file>icons/profiles/dark/youtube.svg</file>
+        <file>icons/profiles/light/foxy.svg</file>
+        <file>icons/profiles/light/instagram.svg</file>
+        <file>icons/profiles/light/linkedin.svg</file>
+        <file>icons/profiles/light/settings.svg</file>
+        <file>icons/profiles/light/twitch.svg</file>
+        <file>icons/profiles/light/whatsapp.svg</file>
+        <file>icons/profiles/light/x.svg</file>
+        <file>icons/profiles/light/youtube.svg</file>
+        <file>icons/firefoxpwaqt.svg</file>
+        <file>icons/profiles/dark/add.svg</file>
+        <file>icons/profiles/dark/run.svg</file>
+        <file>icons/profiles/dark/edit-app.svg</file>
+        <file>icons/profiles/dark/change.svg</file>
+        <file>icons/profiles/light/add.svg</file>
+        <file>icons/profiles/light/edit-app.svg</file>
+        <file>icons/profiles/light/run.svg</file>
+        <file>icons/apps/file-unknown.svg</file>
     </qresource>
 </RCC>

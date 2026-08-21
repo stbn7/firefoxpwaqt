@@ -7,7 +7,7 @@ class App
 {
 public:
     App();
-    App(QString &icon, QString &name, QString &manifest, QString &id, QString description, QString &profile);
+    App(QString &iconName, QString &name, QString &manifest, QString &id, QString &description, QString &profile);
 
     QString name() const;
     void setName(const QString &name);
@@ -25,7 +25,7 @@ public:
     void setId(const QString &id);
 
     QString icon();
-    void setIcon(QString iconPath);
+    void setIcon(QString &iconName);
 
     QString profile() const;
     void setProfile(const QString &manifest);
@@ -41,7 +41,7 @@ private:
     QString m_keywords;
     QString m_id;
     QString m_profile;
-    QString m_iconPath;
+    QString m_iconName;
     QString m_manifest;
 };
 
