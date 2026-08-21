@@ -35,8 +35,7 @@
 
 #### Support the Project
 <P>
-FirefoxPWAQt is free, open-source software built with 🖤 <br><br>
-
+FirefoxPWAQt is free, open-source software built with 🖤 
 If you would like to support my work, you can make a contribution through <a href="https://paypal.me/stbn7">PayPal</a>. <br>
 Every contribution helps with development and maintenance. Thank you for supporting FirefoxPWAQt!
 </P>
