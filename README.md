@@ -1,4 +1,6 @@
-
+<div align="center">
+	<h1>Firefoxpwaqt</h1>
+	</div>
 <p align="center">
 <img width="500" height="133" alt="logo" src="https://github.com/user-attachments/assets/b8312d44-eaa5-45d4-97d3-5ed5e657a438" />
 	<p align="center">
@@ -9,7 +11,6 @@
 </p>
 
 <div align="center">
-	<h1>Firefoxpwaqt</h1>
 	<p>
 		<b> Unofficial graphical interface for the <a href="https://pwasforfirefox.filips.si">PWAsforFirefox</a> project, built with Qt6.  </b>
 	</p>
