@@ -43,5 +43,7 @@ Every contribution helps with development and maintenance. Thank you for support
 #### License
 
 Copyright (c) 2024-2026 Stbn7 <br>
-GNU GPL-3.0 License
+This project incorporates components originally licensed under the Mozilla Public License 2.0.
+The original code and any modifications to it remain subject to the MPL 2.0.
+The remainder of the project is distributed under the GNU GPLv3.
 
